@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width">
-        <title>Peer-to-Peer Cue System --- Reciever</title>
+        <title>Handler</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
@@ -19,20 +19,11 @@
                 <td>
                     <input type="text" id="sendMessageBox" placeholder="Enter a message..." autofocus="true" />
                     <button type="button" id="sendButton">Send</button>
-                    <button type="button" id="clearMsgsButton">Clear Msgs (Local)</button>
                 </td>
             </tr>
             <tr>
                 <td><div id="status" class="status"></div></td>
                 <td><div class="message" id="message"></div></td>
-            </tr>
-            <tr>
-                <td class="display-box standby" id="standby"><h2>Standby</h2></td>
-                <td class="display-box hidden" id="go"><h2>Go</h2></td>
-            </tr>
-            <tr>
-                <td class="display-box hidden" id="fade"><h2>Fade</h2></td>
-                <td class="display-box hidden" id="off"><h2>All Off</h2></td>
             </tr>
         </table>
 
@@ -47,13 +38,8 @@
                 var recvId = document.getElementById("receiver-id");
                 var status = document.getElementById("status");
                 var message = document.getElementById("message");
-                var standbyBox = document.getElementById("standby");
-                var goBox = document.getElementById("go");
-                var fadeBox = document.getElementById("fade");
-                var offBox = document.getElementById("off");
                 var sendMessageBox = document.getElementById("sendMessageBox");
                 var sendButton = document.getElementById("sendButton");
-                var clearMsgsButton = document.getElementById("clearMsgsButton");
 
                 /**
                  * Create the Peer object for our end of the connection.
@@ -122,28 +108,7 @@
                 function ready() {
                     conn.on('data', function (data) {
                         console.log("Data recieved");
-                        var cueString = "<span class=\"cueMsg\">Cue: </span>";
-                        switch (data) {
-                            case 'Go':
-                                go();
-                                addMessage(cueString + data);
-                                break;
-                            case 'Fade':
-                                fade();
-                                addMessage(cueString + data);
-                                break;
-                            case 'Off':
-                                off();
-                                addMessage(cueString + data);
-                                break;
-                            case 'Reset':
-                                reset();
-                                addMessage(cueString + data);
-                                break;
-                            default:
-                                addMessage("<span class=\"peerMsg\">Peer: </span>" + data);
-                                break;
-                        };
+                        addMessage("<span class=\"peerMsg\">Peer: </span>" + data);
                     });
                     conn.on('close', function () {
                         status.innerHTML = "Connection reset<br>Awaiting connection...";
@@ -151,38 +116,6 @@
                         start(true);
                     });
                 }
-
-                function go() {
-                    standbyBox.className = "display-box hidden";
-                    goBox.className = "display-box go";
-                    fadeBox.className = "display-box hidden";
-                    offBox.className = "display-box hidden";
-                    return;
-                };
-
-                function fade() {
-                    standbyBox.className = "display-box hidden";
-                    goBox.className = "display-box hidden";
-                    fadeBox.className = "display-box fade";
-                    offBox.className = "display-box hidden";
-                    return;
-                };
-
-                function off() {
-                    standbyBox.className = "display-box hidden";
-                    goBox.className = "display-box hidden";
-                    fadeBox.className = "display-box hidden";
-                    offBox.className = "display-box off";
-                    return;
-                }
-
-                function reset() {
-                    standbyBox.className = "display-box standby";
-                    goBox.className = "display-box hidden";
-                    fadeBox.className = "display-box hidden";
-                    offBox.className = "display-box hidden";
-                    return;
-                };
 
                 function addMessage(msg) {
                     var now = new Date();
@@ -204,11 +137,6 @@
                     message.innerHTML = "<br><span class=\"msg-time\">" + h + ":" + m + ":" + s + "</span>  -  " + msg + message.innerHTML;
                 }
 
-                function clearMessages() {
-                    message.innerHTML = "";
-                    addMessage("Msgs cleared");
-                }
-
                 // Listen for enter
                 sendMessageBox.onkeypress = function (e) {
                     var event = e || window.event;
@@ -227,10 +155,6 @@
                     } else {
                         console.log('Connection is closed');
                     }
-                };
-                // Clear messages box
-                clearMsgsButton.onclick = function () {
-                    clearMessages();
                 };
 
                 initialize();
