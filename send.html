@@ -3,12 +3,10 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width">
-        <title>Peer-to-Peer Cue System --- Sender</title>
+        <title>Initiator</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <h1>Peer-to-Peer Cue System --- Sender</h1>
-
         <table class="control">
             <tr>
                 <td class="title">Status:</td>
@@ -23,28 +21,11 @@
                 <td>
                     <input type="text" id="sendMessageBox" placeholder="Enter a message..." autofocus="true" />
                     <button type="button" id="sendButton">Send</button>
-                    <button type="button" id="clearMsgsButton">Clear Msgs (Local)</button>
                 </td>
             </tr>
             <tr>
                 <td><div id="status" class="status"></div></td>
                 <td><div class="message" id="message"></div></td>
-            </tr>
-            <tr>
-                <td>
-                    <button type="button" class="control-button" id="resetButton">Reset</button>
-                </td>
-                <td>
-                    <button type="button" class="control-button" id="goButton">Go</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button type="button" class="control-button" id="fadeButton">Fade</button>
-                </td>
-                <td>
-                    <button type="button" class="control-button" id="offButton">Off</button>
-                </td>
             </tr>
         </table>
 
@@ -58,13 +39,8 @@
                 var recvIdInput = document.getElementById("receiver-id");
                 var status = document.getElementById("status");
                 var message = document.getElementById("message");
-                var goButton = document.getElementById("goButton");
-                var resetButton = document.getElementById("resetButton");
-                var fadeButton = document.getElementById("fadeButton");
-                var offButton = document.getElementById("offButton");
                 var sendMessageBox = document.getElementById("sendMessageBox");
                 var sendButton = document.getElementById("sendButton");
-                var clearMsgsButton = document.getElementById("clearMsgsButton");
                 var connectButton = document.getElementById("connect-button");
                 var cueString = "<span class=\"cueMsg\">Cue: </span>";
 
@@ -177,19 +153,6 @@
                     }
                 }
 
-                goButton.onclick = function () {
-                    signal("Go");
-                };
-                resetButton.onclick = function () {
-                    signal("Reset");
-                };
-                fadeButton.onclick = function () {
-                    signal("Fade");
-                };
-                offButton.onclick = function () {
-                    signal("Off");
-                };
-
                 function addMessage(msg) {
                     var now = new Date();
                     var h = now.getHours();
@@ -210,11 +173,6 @@
                     message.innerHTML = "<br><span class=\"msg-time\">" + h + ":" + m + ":" + s + "</span>  -  " + msg + message.innerHTML;
                 };
 
-                function clearMessages() {
-                    message.innerHTML = "";
-                    addMessage("Msgs cleared");
-                };
-
                 // Listen for enter in message box
                 sendMessageBox.onkeypress = function (e) {
                     var event = e || window.event;
@@ -233,10 +191,6 @@
                     } else {
                         console.log('Connection is closed');
                     }
-                };
-                // Clear messages box
-                clearMsgsButton.onclick = function () {
-                    clearMessages();
                 };
                 // Start peer connection on click
                 connectButton.addEventListener('click', join);
